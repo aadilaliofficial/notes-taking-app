@@ -43,7 +43,7 @@ export const sendOtp = async (req: Request, res: Response) => {
 // ✅ Verify OTP
 export const verifyOtp = async (req: Request, res: Response) => {
   try {
-    const { email, otp, name, password } = req.body;
+const res = await api.post("/auth/verify-otp", { email, otp, name });
     console.log("Verifying OTP for:", email, "OTP:", otp);
 
     const otpDoc = await Otp.findOne({ email, otp });
@@ -71,3 +71,4 @@ console.log("JWT_SECRET loaded:", process.env.JWT_SECRET);
     res.status(500).json({ message: "OTP verification failed" });
   }
 };
+
