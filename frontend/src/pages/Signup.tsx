@@ -16,6 +16,7 @@ export default function Signup() {
     setLoading(true);
     setError("");
     try {
+      // ✅ correct endpoint
       await api.post("/auth/send-otp", { email, name, dob });
       navigate("/verify-otp", { state: { email } });
     } catch (err: unknown) {
@@ -75,7 +76,7 @@ export default function Signup() {
         </button>
 
         <p className="mt-4 text-center text-sm text-gray-600">
-          Already have an account??{" "}
+          Already have an account?{" "}
           <span className="text-blue-500 hover:underline cursor-pointer">
             Sign in
           </span>
