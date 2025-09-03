@@ -17,7 +17,7 @@ export default function Signup() {
     setError("");
     try {
       // ✅ correct endpoint
-      await api.post("/auth/send-otp", { email, name, dob });
+await api.post("/auth/send-otp", { email });
       navigate("/verify-otp", { state: { email } });
     } catch (err: unknown) {
       const axiosError = err as AxiosError<{ message: string }>;
@@ -85,3 +85,4 @@ export default function Signup() {
     </div>
   );
 }
+
