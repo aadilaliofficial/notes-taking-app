@@ -43,11 +43,17 @@ export const sendOtp = async (req: Request, res: Response) => {
 // ✅ Verify OTP
 export const verifyOtp = async (req: Request, res: Response) => {
   try {
-const res = await api.post("/auth/verify-otp", { email, otp, name });
+    const { email, otp, name, password } = req.body; // frontend se aayega
+
+    if (!email || !otp) {
+      return res.status(400).json({ message: "Email and OTP required" });
+    }
+
     console.log("Verifying OTP for:", email, "OTP:", otp);
 
     const otpDoc = await Otp.findOne({ email, otp });
     if (!otpDoc) return res.status(400).json({ message: "Invalid OTP" });
+
     if (otpDoc.expiresAt < new Date()) {
       return res.status(400).json({ message: "OTP expired" });
     }
@@ -59,11 +65,14 @@ const res = await api.post("/auth/verify-otp", { email, otp, name });
     }
 
     await Otp.deleteMany({ email });
-console.log("JWT_SECRET loaded:", process.env.JWT_SECRET);
 
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET as string, {
-      expiresIn: "1d",
-    });
+    console.log("JWT_SECRET loaded:", process.env.JWT_SECRET);
+
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
     res.json({ message: "OTP verified successfully", token, user });
   } catch (err) {
@@ -71,4 +80,3 @@ console.log("JWT_SECRET loaded:", process.env.JWT_SECRET);
     res.status(500).json({ message: "OTP verification failed" });
   }
 };
-
